@@ -1,20 +1,13 @@
-# LET ME IN — 60-second animated short
+# ROBLOX: THE LAST PLAYER
 
-A self-contained, browser-playable 2D horror short. The animation is drawn in Canvas with original cut-paper cartoon characters, timed captions, snowfall, atmospheric lighting, and synthesized sound effects. No external images, libraries, or assets are required.
+A five-minute, browser-playable 3D animated adventure told in ten connected 30-second chapters. The self-contained project page renders block-proportioned characters and procedural environments with Three.js; story text appears on screen. There is no spoken dialogue, voiceover, or narration.
 
-## Play
+## Watch
 
-Open `index.html` in a modern desktop or mobile browser and select **Play short**. Playback begins after the click so the browser can enable audio. The timeline supports seeking and pause/replay. Whispered dialogue uses your browser's speech synthesis when available; captions are always shown.
+Open `last-player.html` in a current browser with WebGL enabled. The page loads Three.js from jsDelivr, so an internet connection is required. Select **Begin movie** to play. Use the timeline to seek or pause/replay.
 
-## Runtime and beats
+## Save a video
 
-- 0:00–0:07 — snowy midnight establishing shot; the friends hear three knocks
-- 0:07–0:13 — the locked door and the whisper
-- 0:13–0:21 — upstairs hallway; the duplicate appears
-- 0:21–0:29 — confrontation and flight
-- 0:29–0:36 — blackout, crash, silence
-- 0:36–0:48 — empty house in the morning
-- 0:48–0:54 — TV message
-- 0:54–1:00 — three knocks behind the camera; final whisper and black
+Select **Save WebM** to record the WebGL canvas and synthesized background audio. The recording runs from the current playhead to the end of the five-minute movie and downloads as `roblox-the-last-player.webm`. Current desktop Chrome, Edge, and Firefox support WebM recording. Allow the browser to finish playback before closing the tab.
 
-The visual treatment is an original flat, cut-paper cartoon homage rather than copied character artwork. Canvas source resolution is 1280×720 (16:9); the page scales responsively.
+The movie is an original, procedural block-world animation, not an exported studio-rendered film. Visual quality depends on your browser and graphics hardware. This fan-made project is not affiliated with Roblox Corporation.
