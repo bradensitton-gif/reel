@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Download Let Me In — WebM</title>
+<style>
+:root{color-scheme:dark;background:#11131a;color:#eee9df;font:16px/1.5 system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:24px;min-height:100vh;display:grid;place-items:center}.wrap{width:min(100%,1000px)}h1{margin:.25rem 0}.muted{color:#b4b5bd}.badge{color:#f18a8f;font-size:12px;letter-spacing:.16em;text-transform:uppercase}iframe{display:block;width:100%;aspect-ratio:16/9;border:1px solid #474957;border-radius:8px;background:#090a0d;margin:18px 0}button{border:0;border-radius:5px;background:#eee9df;color:#16171b;padding:12px 18px;font-weight:750;font-size:16px;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}#status{color:#d5c7b5}.small{font-size:13px;color:#a6a8b2;margin-top:16px}a{color:#f1a4a7}
+</style>
+</head>
+<body><main class="wrap">
+<div class="badge">Browser export • WebM</div>
+<h1>Download <em>Let Me In</em></h1>
+<p class="muted">This page records the animation canvas and saves a 60-second <code>.webm</code> video to your device.</p>
+<iframe id="film" src="index.html" title="Let Me In animation"></iframe>
+<div class="row"><button id="record" disabled>● Record &amp; download WebM</button><span id="status">Loading animation…</span></div>
+<p class="small">For sound, when prompted choose <b>This Tab</b> and enable <b>Share tab audio</b>. If you skip or cancel tab sharing, it will still record the video (with captions) without sound. Keep this page open until the download begins. WebM playback is supported in modern browsers; use a converter if you specifically need MP4.</p>
+</main>
+<script>
+(()=>{
+const frame=document.querySelector('#film'),button=document.querySelector('#record'),status=document.querySelector('#status');
+let busy=false;
+frame.addEventListener('load',()=>{try{const canvas=frame.contentDocument.querySelector('#film');if(canvas&&canvas.captureStream){button.disabled=false;status.textContent='Ready — click Record & download.'}else status.textContent='Could not access animation canvas. Open this page from the repository site.'}catch(e){status.textContent='Could not load the animation. Open this page from the repository site.'}});
+button.addEventListener('click',async()=>{
+ if(busy)return;busy=true;button.disabled=true;let audioCapture=null,stream=null,recorder=null,chunks=[];
+ try{
+  const animation=frame.contentDocument,canvas=animation.querySelector('#film'),start=animation.querySelector('#start');
+  if(!canvas||!start)throw new Error('Animation page is not ready. Reload and try again.');
+  stream=canvas.captureStream(30);
+  if(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia){
+   status.textContent='Select this tab in the sharing prompt and enable tab audio for sound…';
+   try{audioCapture=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});const audioTracks=audioCapture.getAudioTracks();audioTracks.forEach(track=>stream.addTrack(track));if(!audioTracks.length)status.textContent='No tab audio selected — recording video with captions.'}
+   catch(e){status.textContent='Tab audio unavailable — recording video with captions.'}
+  }
+  const mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(type=>MediaRecorder.isTypeSupported(type));
+  if(!mime)throw new Error('This browser does not support WebM recording. Try an up-to-date Chrome, Edge, or Firefox.');
+  recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:5000000});
+  recorder.ondataavailable=event=>{if(event.data&&event.data.size)chunks.push(event.data)};
+  recorder.onerror=()=>{status.textContent='Recording failed. Try another browser.';cleanup()};
+  recorder.onstop=()=>{const blob=new Blob(chunks,{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='let-me-in-60-seconds.webm';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent='Done — your WebM download should be in your Downloads folder.';cleanup()};
+  recorder.start(1000);status.textContent='Recording… keep this page open for 60 seconds.';
+  start.click();
+  window.setTimeout(()=>{if(recorder&&recorder.state==='recording'){status.textContent='Finishing video…';recorder.stop()}},60100);
+ }catch(error){status.textContent=error.message||'Could not start recording.';cleanup()}
+ function cleanup(){if(audioCapture)audioCapture.getTracks().forEach(track=>track.stop());if(stream)stream.getTracks().forEach(track=>track.stop());busy=false;button.disabled=false}
+});
+})();
+</script></body>
+</html>
